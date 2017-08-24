@@ -9,7 +9,7 @@
     >>>api.messages.send(user_id=<user_id>, message='<message>')
     2134837
 
-**It has a newer method to auth with login and password(it works much faster than at the** *"vk"*::
+**It has a newer method to auth with login and password(it works much faster than at the** *"vk"*)::
 
     >>>import vkAPI
 
