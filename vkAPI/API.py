@@ -64,8 +64,9 @@ class Session(object):
         access_token = self.access_token
         if access_token:
             method_args['access_token'] = access_token
-        if self._secret is not None:
-            method_args = self.get_sig_data(request._method_name, self._secret, method_args)
+        if hasattr(self, '_secret'):
+            if self._secret is not None:
+                method_args = self.get_sig_data(request._method_name, self._secret, method_args)
         timeout = request._api._timeout
         response = self._session_request.post(url, method_args, timeout=timeout)
         return response
@@ -100,6 +101,18 @@ class API(object):
         return getattr(self, method_name)(**method_kwargs)
 
 
+class Decorator(API):
+    def __getattr__(self, method_name):
+        return DecorRequest(self, method_name)
+
+    def __call__(self, method_name, **method_kwargs):
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                return func(*args, getattr(self, method_name)(**method_kwargs), **kwargs)
+            return wrapper
+        return decorator
+
+
 class Request(object):
     __slots__ = ('_api', '_method_name', '_method_args')
 
@@ -113,6 +126,20 @@ class Request(object):
     def __call__(self, **method_args):
         self._method_args = method_args
         return self._api._session._make_request(self)
+
+
+class DecorRequest(Request):
+    def __getattr__(self, method_name):
+        return DecorRequest(self._api, self._method_name + '.' + method_name)
+
+    def __call__(self, is_method=False, **method_args):
+        self._method_args = method_args
+
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                return func(*args, self._api._session._make_request(self), **kwargs)
+            return wrapper
+        return decorator
 
 
 class AuthSession(AuthMixin, Session):

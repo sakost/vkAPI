@@ -1,6 +1,5 @@
 from distutils.core import setup
-from vkAPI import __version__, __author__
-from os.path import join, dirname
+from vkAPI import __version__, __author__, __doc__
 
 setup(
     name='vkAPI',
@@ -11,7 +10,7 @@ setup(
     author=__author__,
     author_email='sakost01@gmail.com',
     description='Library for interaction with API of vk',
-    long_description=open('README.rst').read(),
+    long_description=__doc__,
     test_suite='tests',
     install_requires=[
         'requests==2.9.1'

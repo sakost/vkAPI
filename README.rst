@@ -16,6 +16,29 @@
     >>>session = AuthSession('<user_login>', 'user_password'[, app_id=<app_id>][, scope='all'][, lang='ru'][, client_secret='<secret>'])
     ...
 
+**It has a class of decorator**::
+
+    >>>import vkAPI
+
+    >>> session = ...
+
+    >>>decorator = vkAPI.Decorator(session)
+
+    >>>@decorator.users.get(user_ids='...')
+    ...def callback(callback_data):
+    ...    print(callback_data)
+    >>>callback()
+    [...]
+    >>>class Test:
+    ...    @decorator.users.get(user_ids='...')
+    ...    def callback(self, callback_data):
+    ...        print(callback_data)
+
+    >>>Test().callback()
+    [...]
+
+*The callback data must be at the end of user's function/method*
+
 **It also has a LongPoll support**::
 
     >>>import vkAPI
