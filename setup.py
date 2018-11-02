@@ -13,6 +13,6 @@ setup(
     long_description=__doc__,
     test_suite='tests',
     install_requires=[
-        'requests==2.9.1'
+        'requests>=2.20.0'
     ]
 )
